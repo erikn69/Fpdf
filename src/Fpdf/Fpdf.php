@@ -134,7 +134,7 @@ function __construct($orientation='P', $unit='mm', $size='A4')
 	$this->DefPageSize = $size;
 	$this->CurPageSize = $size;
 	// Page orientation
-	$orientation = strtolower($orientation);
+	$orientation = strtolower((string)$orientation);
 	if($orientation=='p' || $orientation=='portrait')
 	{
 		$this->DefOrientation = 'P';
@@ -176,7 +176,7 @@ function SetMargins($left, $top, $right=null)
 	// Set left, top and right margins
 	$this->lMargin = $left;
 	$this->tMargin = $top;
-	if($right===null)
+	if(!$right)
 		$right = $left;
 	$this->rMargin = $right;
 }
@@ -449,10 +449,10 @@ function Rect($x, $y, $w, $h, $style='')
 function AddFont($family, $style='', $file='')
 {
 	// Add a TrueType, OpenType or Type1 font
-	$family = strtolower($family);
-	if($file=='')
-		$file = str_replace(' ','',$family).strtolower($style).'.php';
-	$style = strtoupper($style);
+	$family = strtolower((string)$family);
+	if(!$file)
+		$file = str_replace(' ','',$family).strtolower((string)$style).'.php';
+	$style = strtoupper((string)$style);
 	if($style=='IB')
 		$style = 'BI';
 	$fontkey = $family.$style;
@@ -474,11 +474,11 @@ function AddFont($family, $style='', $file='')
 function SetFont($family, $style='', $size=0)
 {
 	// Select a font; size given in points
-	if($family=='')
+	if(!$family)
 		$family = $this->FontFamily;
 	else
-		$family = strtolower($family);
-	$style = strtoupper($style);
+		$family = strtolower((string)$family);
+	$style = strtoupper((string)$style);
 	if(strpos($style,'U')!==false)
 	{
 		$this->underline = true;
@@ -488,7 +488,7 @@ function SetFont($family, $style='', $size=0)
 		$this->underline = false;
 	if($style=='IB')
 		$style = 'BI';
-	if($size==0)
+	if(!$size)
 		$size = $this->FontSizePt;
 	// Test if font is already selected
 	if($this->FontFamily==$family && $this->FontStyle==$style && $this->FontSizePt==$size)
@@ -871,14 +871,14 @@ function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 	if(!isset($this->images[$file]))
 	{
 		// First use of this image, get info
-		if($type=='')
+		if(!$type)
 		{
 			$pos = strrpos($file,'.');
 			if(!$pos)
 				$this->Error('Image file has no extension and no type was specified: '.$file);
 			$type = substr($file,$pos+1);
 		}
-		$type = strtolower($type);
+		$type = strtolower((string)$type);
 		if($type=='jpeg')
 			$type = 'jpg';
 		$mtd = '_parse'.$type;
@@ -1067,7 +1067,7 @@ protected function _getpagesize($size)
 {
 	if(is_string($size))
 	{
-		$size = strtolower($size);
+		$size = strtolower((string)$size);
 		if(!isset($this->StdPageSizes[$size]))
 			$this->Error('Unknown page size: '.$size);
 		$a = $this->StdPageSizes[$size];
@@ -1144,7 +1144,7 @@ protected function _loadfont($font)
 	if(!isset($name))
 		$this->Error('Could not include font definition file');
 	if(isset($enc))
-		$enc = strtolower($enc);
+		$enc = strtolower((string)$enc);
 	if(!isset($subsetted))
 		$subsetted = false;
 	return get_defined_vars();
@@ -1689,7 +1689,7 @@ protected function _putfonts()
 		else
 		{
 			// Allow for additional types
-			$mtd = '_put'.strtolower($type);
+			$mtd = '_put'.strtolower((string)$type);
 			if(!method_exists($this,$mtd))
 				$this->Error('Unsupported font type: '.$type);
 			$this->$mtd($font);
@@ -1909,4 +1909,3 @@ protected function _enddoc()
 	$this->state = 3;
 }
 }
-?>
